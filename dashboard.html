@@ -1,0 +1,1566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&family=Share+Tech+Mono&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{background:#080c09;color:#e8dfc8;font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh}
+
+:root{
+  --ink:#080c09;
+  --deep:#0a0e0b;
+  --surface:#0f1510;
+  --panel:#141c15;
+  --rim:rgba(201,168,76,.14);
+  --rim2:rgba(201,168,76,.28);
+  --gold:#c9a84c;
+  --gold-bright:#e2c06a;
+  --gold-dim:#8a6e2f;
+  --gold-pale:#f5e9c8;
+  --gold-glow:rgba(201,168,76,.15);
+  --gold-glow2:rgba(201,168,76,.07);
+  --emerald:#2a7a4b;
+  --emerald-bright:#3dbb70;
+  --emerald-glow:rgba(42,122,75,.18);
+  --cream:#e8dfc8;
+  --cream2:#b8a98a;
+  --cream3:#7a6a50;
+  --white:#faf7f0;
+  --red:#ff5252;
+  --blue:#4a9eff;
+  --serif:'Cormorant Garamond',serif;
+  --sans:'Inter',sans-serif;
+  --mono:'Share Tech Mono',monospace;
+  --grotesk:'Space Grotesk',sans-serif;
+  --radius:14px;
+  --radius-sm:8px;
+}
+
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:.5;
+}
+
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 70% 50% at 85% 5%, rgba(201,168,76,.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 10% 85%, rgba(42,122,75,.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(42,122,75,.03) 0%, transparent 70%);
+}
+
+/* grid lines */
+.grid-lines{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    linear-gradient(rgba(201,168,76,.018) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(201,168,76,.018) 1px,transparent 1px);
+  background-size:52px 52px;
+}
+
+/* ── DEMO BANNER ── */
+.demo-banner{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  height:32px;display:flex;align-items:center;justify-content:center;gap:8px;
+  background:repeating-linear-gradient(135deg,#3a2f0a,#3a2f0a 10px,#2c2408 10px,#2c2408 20px);
+  color:var(--gold-pale);font-family:var(--mono);font-size:10px;letter-spacing:1.5px;
+  border-bottom:1px solid rgba(201,168,76,.35);
+}
+.demo-banner b{color:var(--white)}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:32px;left:0;right:0;z-index:200;
+  height:62px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+  background:rgba(8,12,9,.9);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--rim);
+}
+.nav-brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo{
+  width:32px;height:32px;
+  background:linear-gradient(135deg,var(--gold),var(--emerald-bright));
+  border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:15px;font-weight:700;color:#080c09;
+  box-shadow:0 0 18px rgba(201,168,76,.28);flex-shrink:0;
+}
+.nav-brand-text{font-family:var(--serif);font-size:19px;font-weight:600;color:var(--gold-bright);letter-spacing:.5px}
+.nav-brand-sub{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--cream3);margin-top:1px}
+
+.nav-right{display:flex;align-items:center;gap:10px}
+.nav-user{display:flex;align-items:center;gap:10px}
+.nav-avatar{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold-dim),var(--emerald-dim));
+  border:1px solid var(--rim);display:flex;align-items:center;justify-content:center;
+  font-family:var(--serif);font-size:14px;font-weight:700;color:var(--gold-bright);
+  cursor:pointer;
+}
+.nav-user-info{display:flex;flex-direction:column}
+.nav-user-name{font-size:13px;font-weight:500;color:var(--cream);line-height:1}
+.nav-user-role{font-family:var(--mono);font-size:9px;letter-spacing:1.5px;color:var(--cream3);margin-top:2px}
+
+.btn-icon{
+  width:34px;height:34px;border-radius:50%;border:1px solid var(--rim);
+  background:rgba(15,21,16,.6);color:var(--cream2);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+  transition:.2s;backdrop-filter:blur(8px);position:relative;
+}
+.btn-icon:hover{border-color:var(--gold);color:var(--gold-bright);box-shadow:0 0 12px var(--gold-glow)}
+.notif-dot{
+  position:absolute;top:5px;right:5px;width:7px;height:7px;border-radius:50%;
+  background:var(--emerald-bright);border:1.5px solid var(--ink);
+}
+
+/* ── LAYOUT ── */
+.wrapper{
+  position:relative;z-index:1;
+  max-width:1200px;margin:0 auto;
+  padding:120px 32px 60px;
+}
+
+/* ── GREETING ── */
+.greeting-row{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  margin-bottom:28px;gap:16px;
+}
+.greeting-left h2{
+  font-family:var(--serif);font-size:32px;font-weight:600;color:var(--white);line-height:1.1;letter-spacing:-.3px;
+}
+.greeting-left h2 em{
+  font-style:italic;
+  background:linear-gradient(135deg,var(--gold-bright),var(--emerald-bright));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.greeting-sub{font-family:var(--mono);font-size:10px;letter-spacing:2px;color:var(--cream3);margin-top:4px}
+.greeting-date{text-align:right}
+.date-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--cream3);margin-bottom:3px}
+.date-value{font-family:var(--grotesk);font-size:13px;font-weight:500;color:var(--cream2)}
+
+/* ── BALANCE HERO ── */
+.balance-hero{
+  background:rgba(14,20,15,.85);
+  border:1px solid var(--rim);border-radius:var(--radius);
+  padding:32px 36px;margin-bottom:18px;
+  display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;
+  backdrop-filter:blur(20px);position:relative;overflow:hidden;
+  transition:border-color .3s;
+}
+.balance-hero::before{
+  content:'';position:absolute;top:-80px;right:-60px;width:220px;height:220px;
+  background:radial-gradient(circle,rgba(201,168,76,.09) 0%,transparent 70%);pointer-events:none;
+}
+.balance-hero::after{
+  content:'';position:absolute;bottom:-40px;left:-40px;width:160px;height:160px;
+  background:radial-gradient(circle,rgba(42,122,75,.07) 0%,transparent 70%);pointer-events:none;
+}
+.balance-hero:hover{border-color:var(--rim2)}
+
+.balance-eyebrow{font-family:var(--mono);font-size:9px;letter-spacing:3px;color:var(--cream3);text-transform:uppercase;margin-bottom:10px}
+.balance-amount{
+  font-family:var(--grotesk);font-size:52px;font-weight:700;color:var(--gold-bright);
+  line-height:1;text-shadow:0 0 40px rgba(226,192,106,.25);letter-spacing:-.02em;
+  transition:.4s ease;
+}
+.balance-meta{display:flex;gap:28px;margin-top:16px;flex-wrap:wrap}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--cream3);text-transform:uppercase}
+.meta-value{font-size:13px;font-weight:500;color:var(--cream2)}
+
+.balance-right{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.status-badge{
+  background:rgba(61,187,112,.1);border:1px solid rgba(61,187,112,.25);
+  border-radius:20px;padding:6px 14px;font-size:12px;color:var(--emerald-bright);
+  font-weight:500;display:flex;align-items:center;gap:6px;white-space:nowrap;
+}
+.status-dot{width:6px;height:6px;border-radius:50%;background:var(--emerald-bright);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.mini-chart{display:flex;align-items:flex-end;gap:3px;height:36px}
+.bar{width:6px;border-radius:2px 2px 0 0;background:var(--gold-glow);transition:.3s}
+.bar.hi{background:linear-gradient(to top,var(--gold-dim),var(--gold))}
+
+/* ── ACTION GRID ── */
+.action-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:16px;margin-bottom:18px;
+}
+.action-card{
+  background:rgba(14,20,15,.8);
+  border:1px solid var(--rim);border-radius:var(--radius);
+  padding:22px;backdrop-filter:blur(16px);
+  transition:border-color .25s,box-shadow .25s,transform .25s;
+  position:relative;overflow:hidden;
+}
+.action-card::before{
+  content:'';position:absolute;inset:0;border-radius:var(--radius);
+  background:linear-gradient(135deg,rgba(201,168,76,.04),transparent);pointer-events:none;
+}
+.action-card:hover{
+  border-color:var(--rim2);
+  box-shadow:0 8px 28px rgba(201,168,76,.08),inset 0 1px 0 rgba(201,168,76,.08);
+  transform:translateY(-2px);
+}
+.card-icon{
+  width:38px;height:38px;border-radius:var(--radius-sm);
+  background:var(--gold-glow2);border:1px solid var(--rim);
+  display:flex;align-items:center;justify-content:center;font-size:17px;margin-bottom:14px;
+}
+.card-title{font-family:var(--grotesk);font-size:13px;font-weight:600;color:var(--cream);margin-bottom:14px;letter-spacing:.03em}
+.field-group{display:flex;flex-direction:column;gap:9px}
+.input-wrap input{
+  width:100%;background:rgba(8,12,9,.7);
+  border:1px solid var(--rim);border-radius:var(--radius-sm);
+  padding:10px 13px;color:var(--cream);font-size:13px;font-family:var(--sans);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.input-wrap input::placeholder{color:var(--cream3)}
+.input-wrap input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+.btn-action{
+  width:100%;padding:10px;
+  background:linear-gradient(135deg,var(--gold),#a87d35);
+  border:none;border-radius:var(--radius-sm);
+  color:#080c09;font-size:12px;font-weight:700;font-family:var(--grotesk);
+  cursor:pointer;letter-spacing:.04em;
+  transition:opacity .2s,transform .15s,box-shadow .2s;position:relative;overflow:hidden;
+}
+.btn-action::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,rgba(255,255,255,.12),transparent);
+  border-radius:var(--radius-sm);
+}
+.btn-action:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 18px rgba(201,168,76,.3)}
+.btn-action:active{transform:translateY(0);box-shadow:none}
+
+/* ── BOTTOM GRID ── */
+.bottom-grid{display:grid;grid-template-columns:1fr 320px;gap:16px;margin-bottom:18px}
+
+/* ── SECTION CARD ── */
+.section-card{
+  background:rgba(14,20,15,.8);border:1px solid var(--rim);border-radius:var(--radius);
+  backdrop-filter:blur(16px);overflow:hidden;
+}
+.section-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 22px 14px;border-bottom:1px solid var(--rim);
+}
+.section-title{font-family:var(--grotesk);font-size:12px;font-weight:600;color:var(--cream);letter-spacing:.08em;text-transform:uppercase}
+.section-badge{font-family:var(--mono);font-size:10px;color:var(--cream3)}
+
+/* ── TX TABLE ── */
+.tx-table{width:100%;border-collapse:collapse}
+.tx-table thead th{
+  padding:9px 22px;font-family:var(--mono);font-size:9px;text-transform:uppercase;
+  letter-spacing:.12em;color:var(--cream3);text-align:left;
+  border-bottom:1px solid rgba(201,168,76,.07);font-weight:400;
+}
+.tx-table tbody tr{transition:background .15s}
+.tx-table tbody tr:hover{background:rgba(201,168,76,.03)}
+.tx-table tbody td{
+  padding:13px 22px;font-size:13px;color:var(--cream2);
+  border-bottom:1px solid rgba(201,168,76,.04);vertical-align:middle;
+}
+.tx-table tbody tr:last-child td{border-bottom:none}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.pill-deposit{background:rgba(61,187,112,.1);color:var(--emerald-bright);border:1px solid rgba(61,187,112,.2)}
+.pill-withdraw{background:rgba(255,82,82,.1);color:var(--red);border:1px solid rgba(255,82,82,.2)}
+.pill-transfer{background:rgba(74,158,255,.1);color:var(--blue);border:1px solid rgba(74,158,255,.2)}
+.tx-pos{color:var(--emerald-bright);font-weight:500}
+.tx-neg{color:var(--red);font-weight:500}
+.tx-empty{text-align:center;padding:40px 22px;color:var(--cream3);font-size:13px}
+
+/* ── RIGHT COLUMN ── */
+.right-col{display:flex;flex-direction:column;gap:16px}
+
+.security-card,.nav-card{
+  background:rgba(14,20,15,.8);border:1px solid var(--rim);border-radius:var(--radius);
+  padding:22px;backdrop-filter:blur(16px);
+}
+.pass-title{
+  font-family:var(--grotesk);font-size:12px;font-weight:600;color:var(--cream);
+  letter-spacing:.08em;text-transform:uppercase;margin-bottom:14px;
+  display:flex;align-items:center;gap:7px;
+}
+.nav-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btn-nav{
+  padding:11px 8px;background:rgba(201,168,76,.05);border:1px solid var(--rim);
+  border-radius:var(--radius-sm);color:var(--cream2);font-size:12px;font-family:var(--sans);
+  cursor:pointer;text-align:center;transition:.2s;text-decoration:none;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+}
+.btn-nav:hover{border-color:var(--gold);color:var(--gold-bright);background:var(--gold-glow2)}
+.btn-logout{grid-column:span 2;background:rgba(255,82,82,.05);border-color:rgba(255,82,82,.18);color:rgba(255,82,82,.65)}
+.btn-logout:hover{background:rgba(255,82,82,.1);border-color:rgba(255,82,82,.45);color:var(--red)}
+
+/* ── STATS ROW ── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+.stat-card{
+  background:rgba(14,20,15,.8);border:1px solid var(--rim);border-radius:var(--radius);
+  padding:18px 20px;backdrop-filter:blur(12px);transition:border-color .2s,transform .2s;
+}
+.stat-card:hover{border-color:var(--rim2);transform:translateY(-1px)}
+.stat-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--cream3);text-transform:uppercase;margin-bottom:8px}
+.stat-value{font-family:var(--grotesk);font-size:22px;font-weight:700;color:var(--gold-bright);line-height:1}
+.stat-change{font-family:var(--mono);font-size:9px;letter-spacing:1px;margin-top:5px}
+.stat-up{color:var(--emerald-bright)}
+.stat-down{color:var(--red)}
+
+/* ── TOAST ── */
+.toast-container{position:fixed;bottom:24px;right:24px;z-index:999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{
+  background:rgba(10,14,11,.95);border:1px solid var(--rim);border-radius:var(--radius-sm);
+  padding:13px 16px;font-size:13px;color:var(--cream);
+  backdrop-filter:blur(20px);display:flex;align-items:center;gap:9px;
+  animation:slideIn .3s ease,fadeOut .4s ease 2.6s forwards;
+  pointer-events:all;min-width:230px;max-width:300px;box-shadow:0 8px 28px rgba(0,0,0,.5);
+}
+.toast.success{border-color:rgba(61,187,112,.35)}
+.toast.error{border-color:rgba(255,82,82,.35)}
+.toast.info{border-color:rgba(201,168,76,.35)}
+.toast-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.toast.success .toast-dot{background:var(--emerald-bright)}
+.toast.error .toast-dot{background:var(--red)}
+.toast.info .toast-dot{background:var(--gold)}
+@keyframes slideIn{from{transform:translateX(36px);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes fadeOut{from{opacity:1}to{opacity:0;transform:translateY(6px)}}
+
+/* ── MODAL ── */
+.modal-overlay{
+  position:fixed;inset:0;z-index:400;
+  background:rgba(4,8,5,.8);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;padding:20px;
+  opacity:0;pointer-events:none;transition:.25s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:rgba(14,20,15,.98);border:1px solid var(--rim2);border-radius:var(--radius);
+  padding:36px;width:100%;max-width:400px;position:relative;
+  box-shadow:0 24px 80px rgba(0,0,0,.7);
+}
+.modal-title{font-family:var(--serif);font-size:26px;font-weight:600;color:var(--white);margin-bottom:6px}
+.modal-sub{font-size:12px;color:var(--cream3);margin-bottom:24px;font-family:var(--mono);letter-spacing:.5px}
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  background:transparent;border:1px solid var(--rim);border-radius:50%;
+  width:28px;height:28px;cursor:pointer;color:var(--cream3);font-size:12px;
+  display:flex;align-items:center;justify-content:center;transition:.2s;
+}
+.modal-close:hover{border-color:var(--gold);color:var(--gold-bright)}
+.form-group{margin-bottom:14px}
+.form-label{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--cream3);text-transform:uppercase;display:block;margin-bottom:6px}
+.form-input{
+  width:100%;background:rgba(8,12,9,.8);border:1px solid var(--rim);border-radius:var(--radius-sm);
+  padding:11px 13px;color:var(--cream);font-size:14px;font-family:var(--sans);outline:none;transition:.2s;
+}
+.form-input::placeholder{color:var(--cream3)}
+.form-input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+.form-btn{
+  width:100%;padding:13px;margin-top:8px;
+  background:linear-gradient(135deg,var(--gold),#a87d35);
+  border:none;border-radius:var(--radius-sm);
+  color:#080c09;font-size:14px;font-weight:700;font-family:var(--grotesk);
+  cursor:pointer;letter-spacing:.04em;transition:.2s;
+}
+#successReceipt{
+    margin-top:25px;
+    padding:25px;
+    border-radius:20px;
+    background:#08150d;
+    border:1px solid #d4af37;
+}
+
+.receipt-icon{
+    font-size:48px;
+    text-align:center;
+}
+
+#receiptTitle{
+    text-align:center;
+    color:#fff;
+}
+
+#receiptAmount{
+    text-align:center;
+    color:#d4af37;
+    font-size:52px;
+}
+
+.receipt-row{
+    display:flex;
+    justify-content:space-between;
+    margin:15px 0;
+}
+.form-btn:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,168,76,.3)}
+.form-footer{font-size:12px;color:var(--cream3);text-align:center;margin-top:16px}
+.form-footer a{color:var(--gold);text-decoration:none}
+.form-footer a:hover{color:var(--gold-bright)}
+.form-divider{display:flex;align-items:center;gap:12px;margin:18px 0}
+.form-divider::before,.form-divider::after{content:'';flex:1;height:1px;background:var(--rim)}
+.form-divider span{font-family:var(--mono);font-size:9px;letter-spacing:2px;color:var(--cream3)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:900px){
+  .action-grid{grid-template-columns:1fr}
+  .bottom-grid{grid-template-columns:1fr}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .balance-hero{grid-template-columns:1fr}
+  .balance-right{align-items:flex-start}
+  nav{padding:0 20px}
+  .wrapper{padding:110px 16px 60px}
+  .nav-user-info{display:none}
+  .greeting-row{flex-direction:column;align-items:flex-start}
+  .greeting-date{text-align:left}
+}
+@media(max-width:560px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .balance-amount{font-size:38px}
+}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="grid-lines"></div>
+
+<!-- DEMO BANNER -->
+
+
+<!-- NAV -->
+<nav>
+  <a class="nav-brand" href="#">
+    <div class="nav-logo">A</div>
+    <div>
+      <div class="nav-brand-text">ROYAL Bank</div>
+      <div class="nav-brand-sub">PRIVATE BANKING</div>
+    </div>
+  </a>
+  <div class="nav-right">
+    <button
+class="btn-icon"
+onclick="showNotifications()"
+title="Notifications">
+
+🔔
+
+<span
+class="notif-dot">
+</span>
+
+
+    </button>
+    <button class="btn-icon" onclick="showToast('Demo only — settings unavailable','info')" title="Settings">⚙️</button>
+    <div class="nav-user">
+      <div
+class="nav-avatar"
+onclick="openModal('profile')"
+style="cursor:pointer;">
+AS
+</div>
+      <div class="nav-user-info">
+        <span class="nav-user-name" id="userName">
+Loading...
+</span>
+        <span class="nav-user-role">PREMIUM CLIENT</span>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="wrapper">
+
+  <!-- GREETING -->
+  <div class="greeting-row">
+    <div class="greeting-left">
+      <h2>
+Good
+<em id="timeGreet">
+morning
+</em>,
+<span id="greetingUser">
+User
+</span>
+</h2>
+      <div class="greeting-sub">PRIVATE SUITE · ACCOUNT OVERVIEW</div>
+    </div>
+    <div class="greeting-date">
+      <div class="date-label">TODAY</div>
+      <div
+class="date-value"
+id="currentDate">
+—
+</div>
+
+<div
+style="
+margin-top:5px;
+color:#c9a84c;
+font-size:14px;"
+id="liveClock">
+00:00:00
+</div>
+    </div>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Monthly Inflow</div>
+      <div class="stat-value">₹1.24L</div>
+      <div class="stat-change stat-up">▲ 8.3% vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Monthly Spend</div>
+      <div class="stat-value">₹38,450</div>
+      <div class="stat-change stat-down">▲ 2.1% vs last month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Transactions</div>
+      <!-- Transactions -->
+
+    
+      <div class="stat-value" id="txCountStat">1</div>
+      <div class="stat-change stat-up">this month</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Reward Points</div>
+      <div class="stat-value">4,820</div>
+      <div class="stat-change stat-up">▲ 340 earned today</div>
+    </div>
+  </div>
+
+  <!-- BALANCE HERO -->
+  <div class="balance-hero">
+    <div>
+      <div class="balance-eyebrow">AVAILABLE BALANCE</div>
+      <div class="balance-amount" id="balanceDisplay">₹2,48,500.00</div>
+      <div class="balance-meta">
+        <div class="meta-item">
+          <span class="meta-label">Account No.</span>
+          <span
+class="meta-value"
+id="accNumber">
+Loading...
+</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Account Type</span>
+         <span
+class="meta-value"
+id="accType">
+Loading...
+</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">IFSC</span>
+          <span class="meta-value">AURM0001234</span>
+        </div>
+        <div class="meta-item">
+          <span class="meta-label">Member Since</span>
+          <span class="meta-value">Jan 2022</span>
+        </div>
+      </div>
+    </div>
+    <div class="balance-right">
+      <div class="status-badge"><span class="status-dot"></span>Account Active</div>
+      <div class="mini-chart" id="miniChart"></div>
+    </div>
+  </div>
+
+  <!-- ACTION CARDS -->
+<div class="action-grid">
+
+    <div class="action-card">
+        <div class="card-icon">💰</div>
+        <div class="card-title">Deposit Funds</div>
+
+        <div class="field-group">
+            <div class="input-wrap">
+                <input id="depositAmt" type="number" placeholder="Amount (₹)" min="1">
+            </div>
+
+            <button class="btn-action" onclick="depositMoney()">
+                Add Funds →
+            </button>
+        </div>
+    </div>
+
+    <div class="action-card">
+        <div class="card-icon">💸</div>
+        <div class="card-title">Withdraw Cash</div>
+
+        <div class="field-group">
+            <div class="input-wrap">
+                <input id="withdrawAmt" type="number" placeholder="Amount (₹)" min="1">
+            </div>
+
+            <button class="btn-action" onclick="withdrawMoney()">
+                Withdraw →
+            </button>
+        </div>
+    </div>
+
+    <div class="action-card">
+        <div class="card-icon">🔄</div>
+        <div class="card-title">Send / Transfer</div>
+
+        <div class="field-group">
+            <div class="input-wrap">
+                <input id="receiverAcc" type="text" placeholder="Receiver Account No.">
+            </div>
+
+            <div class="input-wrap">
+                <input id="transferAmt" type="number" placeholder="Amount (₹)" min="1">
+            </div>
+
+            <button class="btn-action" onclick="transferMoney()">
+                Send Money →
+            </button>
+        </div>
+    </div>
+
+</div>
+<!-- action-grid END -->
+
+<!-- RECEIPT CARD -->
+<div id="successReceipt"
+style="display:none;"
+class="glass-card">
+
+    <div class="receipt-icon">✅</div>
+
+    <h2 id="receiptTitle">
+        Transaction Successful
+    </h2>
+
+    <h1 id="receiptAmount">
+        ₹0
+    </h1>
+
+    <hr>
+
+    <div class="receipt-row">
+        <span>Receipt ID</span>
+        <span id="receiptId"></span>
+    </div>
+
+    <div class="receipt-row">
+        <span>Account</span>
+        <span id="receiptAccount"></span>
+    </div>
+
+    <div class="receipt-row">
+        <span>Date</span>
+        <span id="receiptDate"></span>
+    </div>
+
+    <div class="receipt-row">
+        <span>Balance</span>
+        <span id="receiptBalance"></span>
+    </div>
+
+    <button
+    class="btn-action"
+    onclick="closeReceipt()">
+        Done
+    </button>
+
+</div>
+
+<!-- BOTTOM GRID -->
+<div class="bottom-grid">
+
+    <!-- Transactions -->
+    <div
+class="section-card"
+id="transactionSection">
+
+     <div class="section-header">
+
+<span class="section-title">
+📜 Recent Transactions
+</span>
+
+<div style="display:flex;gap:10px;align-items:center;">
+
+<span
+class="section-badge"
+id="txBadge">
+12 records
+</span>
+
+<button
+type="button"
+id="historyBtn"
+onclick="toggleTransactions()"
+class="btn-nav">
+show
+</button>
+
+</div>
+
+</div><table
+class="tx-table"
+id="txTable"
+style="display:none;">
+<thead>
+<tr>
+<th>Type</th>
+<th>Receiver</th>
+<th>Amount</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody id="txBody">
+</tbody>
+
+</table>
+</div>
+    
+    <!-- Right col -->
+    <div class="right-col">
+
+      <div class="security-card">
+        <div class="pass-title">🔒 Change Password</div>
+        <div class="field-group">
+          <div class="input-wrap">
+            <input id="newPwd" type="password" placeholder="New password (min 6 chars)">
+          </div>
+          <button class="btn-action" onclick="changePassword()">Update Password</button>
+        </div>
+        <div style="margin-top:12px;font-family:var(--mono);font-size:9px;letter-spacing:1px;color:var(--cream3)">
+       
+          
+        </div>
+      </div>
+      <div class="nav-card">
+    <div class="nav-btns">
+
+        <button
+class="btn-nav"
+onclick="openModal('profile')">
+👤 Profile
+</button>
+
+       
+        <button
+        class="btn-nav"
+        onclick="downloadStatement()">
+        📄 Statement
+        </button>
+
+        <button
+        class="btn-nav btn-logout"
+        onclick="logout()">
+        🚪 Sign Out
+        </button>
+
+    </div>
+</div>
+
+<!-- /wrapper -->
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-profile" onclick="handleOverlay(event,'modal-profile')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-profile')">✕</button>
+    <div class="modal-title">Profile</div>
+
+<div class="form-group">
+<label class="form-label">Username</label>
+<input
+id="profileName"
+class="form-input"
+readonly>
+</div>
+
+<div class="form-group">
+<label class="form-label">Account Number</label>
+<input
+id="profileAccount"
+class="form-input"
+readonly>
+</div>
+
+<div class="form-group">
+<label class="form-label">Account Type</label>
+<input
+id="profileType"
+class="form-input"
+readonly>
+</div>
+
+<div class="form-group">
+<label class="form-label">Bank</label>
+<div class="form-group">
+
+<label class="form-label">
+Balance
+</label>
+
+<input
+id="profileBalance"
+class="form-input"
+readonly>
+
+</div>
+
+<div class="form-group">
+
+<label class="form-label">
+IFSC
+</label>
+
+<input
+id="profileIfsc"
+class="form-input"
+value="AURM0001234"
+readonly>
+
+</div>
+<input
+class="form-input"
+value="ROYAL BANK"
+readonly>
+</div>
+</div>
+
+</div>
+<div class="modal-overlay" id="modal-admin" onclick="handleOverlay(event,'modal-admin')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-admin')">✕</button>
+    <div class="modal-title">Admin Portal</div>
+    <p class="modal-sub">DEMO UI mockup — not a real admin panel</p>
+    <div class="form-group">
+      <label class="form-label">Admin Email</label>
+      <input class="form-input" type="email" placeholder="admin@aurum-demo.example">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Admin Password</label>
+      <input class="form-input" type="password" placeholder="••••••••">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Access PIN</label>
+      <input class="form-input" type="password" placeholder="••••••" maxlength="6" style="letter-spacing:5px;font-size:18px">
+    </div>
+    <button class="form-btn" onclick="closeModal('modal-admin');showToast('Demo only — this is a mockup admin panel','info')">Enter Admin Suite</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-logout" onclick="handleOverlay(event,'modal-logout')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modal-logout')">✕</button>
+    <div class="modal-title">Sign Out?</div>
+   
+    <button class="form-btn" onclick="closeModal('modal-logout');showToast('Demo only — signed out. Refresh to return.','info')">Confirm Sign Out</button>
+    <div class="form-footer"><a href="#" onclick="closeModal('modal-logout');return false">Cancel, stay in suite</a></div>
+  </div>
+</div>
+
+<script>
+/* ── DEMO DATA ── */
+const BASE = "http://127.0.0.1:5000";
+
+let accountNumber = "";
+let username =
+localStorage.getItem(
+"bank_user"
+);
+if(!username){
+
+    window.location.href =
+    "index.html";
+
+}
+
+
+
+const SEED_TX = [
+  {type:'deposit',  desc:'Salary Credit — INFOSYS LTD',   amount:85000, date:'19 Jun 2026'},
+  {type:'withdraw', desc:'Zomato Food Delivery',           amount:840,   date:'19 Jun 2026'},
+  {type:'transfer', desc:'Transfer to Rahul Sharma',       amount:12000, date:'18 Jun 2026'},
+  {type:'deposit',  desc:'Freelance Payment — Client A',   amount:25000, date:'17 Jun 2026'},
+  {type:'withdraw', desc:'Amazon India Purchase',          amount:3499,  date:'16 Jun 2026'},
+  {type:'transfer', desc:'Transfer to Priya Nair',         amount:5500,  date:'15 Jun 2026'},
+  {type:'deposit',  desc:'Interest Credit',                amount:1842,  date:'14 Jun 2026'},
+  {type:'withdraw', desc:'BESCOM Electricity Bill',        amount:1650,  date:'13 Jun 2026'},
+  {type:'withdraw', desc:'Netflix Subscription',           amount:649,   date:'12 Jun 2026'},
+  {type:'deposit',  desc:'Bonus Credit',                   amount:10000, date:'10 Jun 2026'},
+  {type:'withdraw', desc:'BigBasket Grocery',              amount:2890,  date:'09 Jun 2026'},
+  {type:'transfer', desc:'Transfer to Ananya Krishnan',   amount:8000,  date:'07 Jun 2026'},
+];
+
+let transactions = [...SEED_TX];
+
+/* ── UTILS ── */
+function formatINR(n) {
+  return '₹' + Number(n).toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+
+function todayStr() {
+  return new Date().toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function pill(type) {
+  if(type === 'deposit')  return '<span class="pill pill-deposit">▲ Deposit</span>';
+  if(type === 'withdraw') return '<span class="pill pill-withdraw">▼ Withdraw</span>';
+  return '<span class="pill pill-transfer">⇄ Transfer</span>';
+}
+
+/* ── RENDER ── */
+function renderBalance() {
+  const el = document.getElementById('balanceDisplay');
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(6px)';
+  setTimeout(() => {
+    el.textContent = formatINR(balance);
+    el.style.transition = '.4s ease';
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  }, 200);
+}
+
+async function loadTransactions(){
+
+    const response =
+    await fetch(
+        `${BASE}/transactions/${accountNumber}`
+    );
+
+    const data =
+    await response.json();
+
+    const tbody =
+    document.getElementById(
+    "txBody"
+    );
+
+    tbody.innerHTML = "";
+    document.getElementById(
+"txCountStat"
+).innerHTML =
+data.length;
+
+document.getElementById(
+"txBadge"
+).innerHTML =
+data.length +
+" Records";
+
+    data.forEach(row=>{
+      document.getElementById(
+"txCountStat"
+).innerHTML =
+data.length;
+
+document.getElementById(
+"txBadge"
+).innerHTML =
+data.length +
+" records";
+
+        tbody.innerHTML += `
+        <tr>
+        <td>${row.type}</td>
+        <td>${row.receiver || "-"}</td>
+        <td>₹${row.amount}</td>
+        <td>${row.date}</td>
+        </tr>
+        `;
+
+    });
+
+}
+
+/* ── ACTIONS ── */
+async function depositMoney(){
+
+    const amount =
+    document.getElementById(
+    "depositAmt"
+    ).value;
+
+    const response =
+    await fetch(
+        `${BASE}/deposit`,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                account_number:
+                accountNumber,
+                amount:amount
+            })
+        }
+    );
+
+    const data =
+    await response.json();
+
+    showToast(
+    data.message,
+    "success"
+    );
+    if(data.success){
+
+    showReceipt(
+        "Deposit Successful",
+        amount,
+        data.balance || "Updated"
+    );
+
+}
+    document.getElementById(
+"depositAmt"
+).value = "";
+
+    loadData();
+
+}
+async function withdrawMoney(){
+
+    const amount =
+    document.getElementById(
+    "withdrawAmt"
+    ).value;
+
+    const response =
+    await fetch(
+        `${BASE}/withdraw`,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                account_number:
+                accountNumber,
+                amount:amount
+            })
+        }
+    );
+
+    const data =
+    await response.json();
+
+    showToast(
+        data.message,
+        data.success
+        ? "success"
+        : "error"
+    );
+    if(data.success){
+
+    showReceipt(
+        "Withdrawal Successful",
+        amount,
+        data.balance || "Updated"
+    );
+
+}
+    document.getElementById(
+"withdrawAmt"
+).value = "";
+
+    loadData();
+
+}
+
+async function transferMoney(){
+
+    const receiver =
+    document.getElementById(
+    "receiverAcc"
+    ).value;
+
+    const amount =
+    document.getElementById(
+    "transferAmt"
+    ).value;
+
+    const response =
+    await fetch(
+        `${BASE}/transfer`,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                sender:
+                accountNumber,
+                receiver:
+                receiver,
+                amount:
+                amount
+            })
+        }
+    );
+
+    const data =
+    await response.json();
+
+    showToast(
+        data.message,
+        data.success
+        ? "success"
+        : "error"
+    );
+    if(data.success){
+
+    showReceipt(
+        "Transfer Complete",
+        amount,
+        data.balance || "Updated"
+    );
+
+}
+    document.getElementById(
+"receiverAcc"
+).value = "";
+
+document.getElementById(
+"transferAmt"
+).value = "";
+
+    loadData();
+
+}
+async function changePassword(){
+
+    const pwd =
+    document.getElementById(
+    "newPwd"
+    ).value;
+
+    const response =
+    await fetch(
+        `${BASE}/change-password`,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                username:
+                username,
+                new_password:
+                pwd
+            })
+        }
+    );
+
+    const data =
+    await response.json();
+
+    showToast(
+        data.message,
+        "success"
+    );
+
+}
+function handleProfileSave() {
+  closeModal('modal-profile');
+  showToast('Demo only — profile changes not stored ✦', 'info');
+}
+async function deleteAccount(){
+
+    if(
+        !confirm(
+            "Delete Account Permanently?"
+        )
+    ){
+        return;
+    }
+
+    const response =
+    await fetch(
+        `${BASE}/delete-account`,
+        {
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json"
+            },
+            body:JSON.stringify({
+                username:username
+            })
+        }
+    );
+
+    const data =
+    await response.json();
+
+    alert(data.message);
+
+    if(data.success){
+
+        localStorage.removeItem(
+            "bank_user"
+        );
+
+        window.location.href =
+        "index.html";
+    }
+  }
+
+
+async function downloadStatement(){
+
+    const response =
+    await fetch(
+        `${BASE}/transactions/${accountNumber}`
+    );
+
+    const data =
+    await response.json();
+
+    let statement =
+
+`ROYAL BANK
+====================
+
+ACCOUNT:
+${accountNumber}
+
+USER:
+${username}
+
+====================
+
+`;
+
+    data.forEach(tx=>{
+
+        statement +=
+`${tx.date}
+${tx.type}
+₹${tx.amount}
+
+`;
+
+    });
+
+    const blob =
+    new Blob(
+        [statement],
+        {
+            type:"text/plain"
+        }
+    );
+
+    const a =
+    document.createElement(
+        "a"
+    );
+
+    a.href =
+    URL.createObjectURL(
+        blob
+    );
+
+    a.download =
+    "RoyalBank_Statement.txt";
+
+    a.click();
+
+    showToast(
+        "Statement Downloaded",
+        "success"
+    );
+  }
+  
+function toggleTransactions(){
+
+    const table =
+    document.getElementById(
+        "txTable"
+    );
+
+    const btn =
+    document.getElementById(
+        "historyBtn"
+    );
+
+    if(
+        table.style.display === "none"
+    ){
+
+        table.style.display =
+        "table";
+
+        btn.innerHTML =
+        "Hide";
+
+    }else{
+
+        table.style.display =
+        "none";
+
+        btn.innerHTML =
+        "Show";
+
+    }
+
+}
+function logout(){
+
+    localStorage.removeItem(
+        "bank_user"
+    );
+
+    window.location.href =
+    "index.html";
+
+}
+
+/* ── MINI CHART ── */
+function buildMiniChart() {
+  const data = [40, 60, 45, 80, 55, 90, 70, 95, 65, 85];
+  const chart = document.getElementById('miniChart');
+  chart.innerHTML = data.map((v, i) => {
+    const hi = i >= data.length - 3;
+    return `<div class="bar ${hi ? 'hi' : ''}" style="height:${v}%"></div>`;
+  }).join('');
+}
+
+/* ── MODAL SYSTEM ── */
+function openModal(type) {
+  closeAllModals();
+  const el = document.getElementById('modal-' + type);
+  if(el) el.classList.add('open');
+}
+function closeModal(id) {
+  const el = document.getElementById(id);
+  if(el) el.classList.remove('open');
+}
+function closeAllModals() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('open'));
+}
+function handleOverlay(e, id) {
+  if(e.target === document.getElementById(id)) closeModal(id);
+}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeAllModals(); });
+
+/* ── TOAST ── */
+function showToast(msg, type='success') {
+  const c = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<div class="toast-dot"></div><span>${msg}</span>`;
+  c.appendChild(t);
+  setTimeout(() => t.remove(), 3400);
+}
+async function loadData(){
+
+    const response =
+    await fetch(
+        `${BASE}/account/${username}`
+    );
+
+    const data =
+    await response.json();
+
+    accountNumber =
+    data.account_number;
+
+    document.getElementById(
+    "balanceDisplay"
+    ).innerHTML =
+    "₹" +
+    Number(
+    data.balance
+    ).toLocaleString(
+    "en-IN"
+    );
+
+    document.getElementById(
+    "userName"
+    ).innerHTML =
+    username;
+
+    document.getElementById(
+    "greetingUser"
+    ).innerHTML =
+    username;
+
+    document.getElementById(
+    "accNumber"
+    ).innerHTML =
+    data.account_number;
+
+    document.getElementById(
+    "accType"
+    ).innerHTML =
+    data.account_type;
+    document.getElementById(
+"profileName"
+).value =
+username;
+
+document.getElementById(
+"profileAccount"
+).value =
+data.account_number;
+
+document.getElementById(
+"profileType"
+).value =
+data.account_type;
+document.getElementById(
+"profileBalance"
+).value =
+"₹" +
+Number(
+data.balance
+).toLocaleString(
+"en-IN"
+);
+
+    await loadTransactions();
+
+}
+/* ── GREETING & DATE ── */
+function setGreeting() {
+
+    const now =
+    new Date();
+
+    const h =
+    now.getHours();
+
+    let greet =
+    "Good Evening";
+
+    if(h < 12){
+
+        greet =
+        "Good Morning";
+
+    }
+    else if(h < 17){
+
+        greet =
+        "Good Afternoon";
+
+    }
+
+    document.getElementById(
+        "timeGreet"
+    ).textContent =
+    greet;
+
+    document.getElementById(
+        "currentDate"
+    ).textContent =
+    now.toLocaleDateString(
+        'en-IN',
+        {
+            weekday:'long',
+            day:'numeric',
+            month:'long',
+            year:'numeric'
+        }
+    );
+
+}
+function showReceipt(
+    title,
+    amount,
+    balance
+){
+
+    document.getElementById(
+        "successReceipt"
+    ).style.display="block";
+
+    document.getElementById(
+        "receiptTitle"
+    ).innerText=title;
+
+    document.getElementById(
+        "receiptAmount"
+    ).innerText=
+    "₹"+amount;
+
+    document.getElementById(
+        "receiptBalance"
+    ).innerText=
+    "₹"+balance;
+
+    document.getElementById(
+        "receiptDate"
+    ).innerText=
+    new Date().toLocaleString();
+    document.getElementById(
+"receiptAccount"
+).innerText =
+accountNumber;
+
+    document.getElementById(
+        "receiptId"
+    ).innerText=
+    Math.random()
+    .toString(36)
+    .substring(2,10);
+
+}
+function closeReceipt(){
+
+    document.getElementById(
+        "successReceipt"
+    ).style.display = "none";
+
+}
+function showNotifications(){
+
+    showToast(
+        "Last Deposit ₹1000",
+        "success"
+    );
+
+    setTimeout(()=>{
+
+        showToast(
+            "Last Withdraw ₹50",
+            "info"
+        );
+
+    },500);
+
+}
+
+/* ── INIT ── */
+setGreeting();
+
+setInterval(() => {
+    setGreeting();
+}, 60000);
+
+buildMiniChart();
+loadData();
+setInterval(()=>{
+
+    document.getElementById(
+        "liveClock"
+    ).innerHTML =
+    new Date()
+    .toLocaleTimeString(
+        "en-IN"
+    );
+
+},1000);
+buildMiniChart();
+loadData();
+</script>
+</body>
+</html>

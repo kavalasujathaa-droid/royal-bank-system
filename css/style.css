@@ -1,0 +1,35 @@
+body{
+    background:#0b0f0c;
+    color:white;
+    font-family:Arial;
+    margin:0;
+    padding:30px;
+}
+
+.card{
+    background:#151b16;
+    border:1px solid gold;
+    border-radius:15px;
+    padding:20px;
+    margin-bottom:20px;
+}
+
+.balance{
+    color:gold;
+    font-size:40px;
+    font-weight:bold;
+}
+
+button{
+    background:gold;
+    color:black;
+    border:none;
+    padding:10px 20px;
+    border-radius:10px;
+    cursor:pointer;
+}
+
+input{
+    padding:10px;
+    margin:5px;
+}
